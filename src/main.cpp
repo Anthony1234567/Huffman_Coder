@@ -8,11 +8,11 @@
 using namespace std;
 
 int count(const vector<letter> &members) {
-  int counter = 0;
-  for(auto i = 0; i < members.size(); ++i) {
+	int counter = 0;
+	for(auto i = 0; i < members.size(); ++i) {
 		counter += members[i].getFreq();
-  }
-  return counter;
+	}
+	return counter;
 }
 
 void calculateProbabilities(vector<letter> &members) {
@@ -23,20 +23,20 @@ void calculateProbabilities(vector<letter> &members) {
 
 void printAlphabet(const vector<letter> &members) {
 	for(auto i : members) {
-		cout << "Symbol: ";
-    if(i.getChar() == '\n') {
+	cout << "Symbol: ";
+		if(i.getChar() == '\n') {
 			cout << "\\n ";
-    }
-    else if(i.getChar() == ' ') {
-      cout << "space ";
-    }
-    else {
-    	cout << i.getChar() << ' ';
-    }
+		}
+		else if(i.getChar() == ' ') {
+			cout << "space ";
+		}
+		else {
+			cout << i.getChar() << ' ';
+		}
 		cout << "Frequency: " << i.getFreq() << "/" << count(members) << ' '
 			<< "Probability: " << i.getProb() << ' '
-      << "Encoding: " << i.getCode() << endl;
-  }
+			<< "Encoding: " << i.getCode() << endl;
+	}
 }
 
 void huffman(vector<letter> &members) {
@@ -69,10 +69,10 @@ bool seen(const char &l, vector<letter> &members) {
 	for(auto&& i : members) {
 		if(l == i.getChar()) {
 			i.incrementFreq();
-      return true;
-    }
-  }
-  return false;
+			return true;
+		}
+	}
+	return false;
 }
 
 double calcAvgWordLen(vector<letter> members) {
@@ -84,43 +84,43 @@ double calcAvgWordLen(vector<letter> members) {
 }
 
 int main(int argc, const char** argv) {
-  fstream infile;
-  infile.open(argv[1]);
+	fstream infile;
+	infile.open(argv[1]);
 
-  char viewing;
-  string content;
+	char viewing;
+	string content;
 	vector<letter> alphabet;
 
-  while(infile.get(viewing)) {
-    content += viewing;
-    letter v(viewing);
-    if(!seen(viewing, alphabet)) {
-      alphabet.push_back(v);
-    }
-  }
+	while(infile.get(viewing)) {
+		content += viewing;
+		letter v(viewing);
+		if(!seen(viewing, alphabet)) {
+			alphabet.push_back(v);
+		}
+	}
 
 	// get rid of extra '\n' character at end of text;
-  for(auto i = 0; i < alphabet.size(); ++i) {
+	for(auto i = 0; i < alphabet.size(); ++i) {
 		if(alphabet[i].getChar() == '\n') {
 			alphabet[i].decrimentFreq();
 			if(alphabet[i].getFreq() == 0) {
 				alphabet.erase(alphabet.begin() + i);
 			}
 		}
-  }
+	}
 
-  calculateProbabilities(alphabet);
+	calculateProbabilities(alphabet);
 	sort(alphabet.begin(), alphabet.end());
 	huffman(alphabet);
 	printAlphabet(alphabet); //after encoding
 	cout << "Average word length: " << calcAvgWordLen(alphabet) << endl;
 
-  infile.close();
+	infile.close();
 
-  // write to new .zip file
-  string name = argv[1];
-  fstream outfile;
-  outfile.open(name + ".extension" , fstream::in | fstream::app);
+	// write to new .zip file
+	string name = argv[1];
+	fstream outfile;
+	outfile.open(name + ".extension" , fstream::in | fstream::app);
 
 	for(auto i : content) {
 		for(auto j = 0; j < alphabet.size(); ++j) {
@@ -131,5 +131,5 @@ int main(int argc, const char** argv) {
 	}
 
 	outfile.close();
-  return 0;
+	return 0;
 }
