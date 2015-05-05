@@ -134,10 +134,19 @@ int main(int argc, const char** argv) {
 		}
 	}
 
+	cout << "Bit output: " << out << endl;
+	cout << "File size: " << out.size() << "bits"  << '~' << static_cast<double>(out.size())/8 << "bytes" << endl;
+
 	for(auto i = 0; i < out.size(); i+=8) {
-		bitset<8> bitOut(out.substr(i,8));
+		bitset<8> bitOut(out.substr(i, 8));
 		outfile.write((char*) &bitOut, 1);
+		cout.write((char*) &bitOut, 1);
 	}
+
+	cout << endl;
+	//bitset<8> n("6Ø");
+	//cout << n;
+	cout << char(0b00110110)  << char(0b1010111100) << endl;
 
 	outfile.close();
 	return 0;

@@ -10,4 +10,4 @@ decompress:
 		@g++ -std=c++1y src/unmain.cpp src/letter.cpp -o bin/decompress
 
 clean:
-		@rm -R bin
+		@rm -R bin && rm inputfile.extension

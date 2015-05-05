@@ -28,7 +28,7 @@ public:
 	void code(); // encodes 1 to front of larger subgroup and 0 to smaller
   letter fuse(letter&); // binary fusion
   bool operator<(const letter&) const; // sorting purposes
-	void bootlegencode(std::string);
+	void bootlegencode(std::string); // enough said
 };
 
 #endif
