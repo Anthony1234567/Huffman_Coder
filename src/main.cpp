@@ -113,40 +113,50 @@ int main(int argc, const char** argv) {
 	calculateProbabilities(alphabet);
 	sort(alphabet.begin(), alphabet.end());
 	huffman(alphabet);
-	printAlphabet(alphabet); //after encoding
-	cout << "Average word length: " << calcAvgWordLen(alphabet) << endl;
+	//printAlphabet(alphabet); //after encoding
+	//cout << "Average word length: " << calcAvgWordLen(alphabet) << endl;
 
 	infile.close();
-
-	// write to new .zip file
-	string name = argv[1];
-	fstream outfile;
-	outfile.open(name + ".extension" , ios::binary | fstream::out);
 
 	string out;
 
 	for(auto i : content) {
 		for(auto j = 0; j < alphabet.size(); ++j) {
 			if(i == alphabet[j].getChar()) {
-				//outfile << alphabet[j].getCode();
 				out += alphabet[j].getCode();
 			}
 		}
 	}
 
-	cout << "Bit output: " << out << endl;
-	cout << "File size: " << out.size() << "bits"  << '~' << static_cast<double>(out.size())/8 << "bytes" << endl;
+	//cout << "Bit output: " << out << endl;
+	//cout << "File size: " << out.size() << "bits"  << '~' << static_cast<double>(out.size())/8 << "bytes" << endl;
+
+	// write to new .zip file
+	string name2 = argv[1];
+	fstream outfile2;
+	outfile2.open(name2 + ".info" , ios::binary | fstream::out);
+
+	for(auto i = 0; i < alphabet.size(); ++i) {
+		bitset<8> bitOut(alphabet[i].getChar());
+		outfile2.write((char*) &bitOut, 1); // char representation
+		bitset<8> sizeOut(alphabet[i].getCode().size());
+		outfile2.write((char*) &sizeOut, 1); // codeword size
+		bitset<8> codeOut(alphabet[i].getCode());
+		outfile2.write((char*) &codeOut, 1); // codeword
+		outfile2 << endl; // every letter in separate line
+	}
+
+	outfile2.close();
+
+	// write to new .zip file
+	string name = argv[1];
+	fstream outfile;
+	outfile.open(name + ".extension" , ios::binary | fstream::out);
 
 	for(auto i = 0; i < out.size(); i+=8) {
 		bitset<8> bitOut(out.substr(i, 8));
 		outfile.write((char*) &bitOut, 1);
-		cout.write((char*) &bitOut, 1);
 	}
-
-	cout << endl;
-	//bitset<8> n("6Ø");
-	//cout << n;
-	cout << char(0b00110110)  << char(0b1010111100) << endl;
 
 	outfile.close();
 	return 0;

@@ -11,8 +11,9 @@ int main(int argc, const char** argv) {
 	char viewing;
 	while(infile.get(viewing)) {
 		bitset<8> input(viewing);
-		cout << input << endl;
+		cout << input;
 	}
+	cout << endl;
 
 	infile.close();
 }
