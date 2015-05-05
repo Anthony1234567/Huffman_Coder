@@ -8,6 +8,10 @@ letter::letter(double p)
 	: character('\0'), probability(p)
 {}
 
+letter::letter(char c, std::string e)
+	: character(c), encoding(e)
+{}
+
 const char letter::getChar() const {
 	return character;
 }

@@ -16,6 +16,7 @@ private:
 public:
   letter(char); // constructor ~ seen for first time
   letter(double); // data is known (for "fusing" 2 letters)
+  letter(char, std::string); // for decoding
   const char getChar() const; // grab character that represents letter in alphabet
   const int getFreq() const; // grab frequency of letter
   const double getProb() const; // grab probability of letter happening

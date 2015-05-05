@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
+#include <bitset>
 
 #include "letter.h"
 
@@ -120,14 +121,22 @@ int main(int argc, const char** argv) {
 	// write to new .zip file
 	string name = argv[1];
 	fstream outfile;
-	outfile.open(name + ".extension" , fstream::in | fstream::app);
+	outfile.open(name + ".extension" , ios::binary | fstream::out);
+
+	string out;
 
 	for(auto i : content) {
 		for(auto j = 0; j < alphabet.size(); ++j) {
 			if(i == alphabet[j].getChar()) {
-				outfile << alphabet[j].getCode();
+				//outfile << alphabet[j].getCode();
+				out += alphabet[j].getCode();
 			}
 		}
+	}
+
+	for(auto i = 0; i < out.size(); i+=8) {
+		bitset<8> bitOut(out.substr(i,8));
+		outfile.write((char*) &bitOut, 1);
 	}
 
 	outfile.close();
