@@ -5,84 +5,9 @@
 #include <bitset>
 
 #include "letter.h"
+#include "functions.h"
 
 using namespace std;
-
-int count(const vector<letter> &members) {
-	int counter = 0;
-	for(auto i = 0; i < members.size(); ++i) {
-		counter += members[i].getFreq();
-	}
-	return counter;
-}
-
-void calculateProbabilities(vector<letter> &members) {
-	for(auto&& i : members) {
-		i.setProbability(count(members));
-	}
-}
-
-void printAlphabet(const vector<letter> &members) {
-	for(auto i : members) {
-	cout << "Symbol: ";
-		if(i.getChar() == '\n') {
-			cout << "\\n ";
-		}
-		else if(i.getChar() == ' ') {
-			cout << "space ";
-		}
-		else {
-			cout << i.getChar() << ' ';
-		}
-		cout << "Frequency: " << i.getFreq() << "/" << count(members) << ' '
-			<< "Probability: " << i.getProb() << ' '
-			<< "Encoding: " << i.getCode() << endl;
-	}
-}
-
-void huffman(vector<letter> &members) {
-	vector<vector<letter>> fusionTrei;
-	fusionTrei.push_back(members);
-	for(auto i = 0; i < fusionTrei[0].size() - 1; ++i) {
-		vector<letter> iMembers;
-		for(auto j = 0; j < fusionTrei[i].size() - 2; ++j) {
-			iMembers.push_back(fusionTrei[i][j]);
-		}
-		iMembers.push_back(fusionTrei[i][fusionTrei[i].size() - 2].fuse(fusionTrei[i][fusionTrei[i].size() - 1]));
-		sort(iMembers.begin(), iMembers.end());
-		fusionTrei.push_back(iMembers);
-	}
-
-	for(auto i = 0; i < fusionTrei.size(); ++i) {
-		for(auto j = 0; j < fusionTrei[i].size(); ++j) {
-			if(fusionTrei[i][j].getChar() != '\0') {
-				for(auto k = 0; k < members.size(); ++k) {
-					if(members[k].getChar() == fusionTrei[i][j].getChar()) {
-						members[k].bootlegencode(fusionTrei[i][j].getCode());
-					}
-				}
-			}
-		}
-	}
-}
-
-bool seen(const char &l, vector<letter> &members) {
-	for(auto&& i : members) {
-		if(l == i.getChar()) {
-			i.incrementFreq();
-			return true;
-		}
-	}
-	return false;
-}
-
-double calcAvgWordLen(vector<letter> members) {
-	double len = 0;
-	for(auto i = 0; i < members.size(); ++i) {
-		len += members[i].getCode().size() * members[i].getProb();
-	}
-	return len;
-}
 
 int main(int argc, const char** argv) {
 	fstream infile;
@@ -113,8 +38,8 @@ int main(int argc, const char** argv) {
 	calculateProbabilities(alphabet);
 	sort(alphabet.begin(), alphabet.end());
 	huffman(alphabet);
-	//printAlphabet(alphabet); //after encoding
-	//cout << "Average word length: " << calcAvgWordLen(alphabet) << endl;
+	printAlphabet(alphabet); //after encoding
+	cout << "Average word length: " << calcAvgWordLen(alphabet) << endl;
 
 	infile.close();
 
@@ -128,8 +53,8 @@ int main(int argc, const char** argv) {
 		}
 	}
 
-	//cout << "Bit output: " << out << endl;
-	//cout << "File size: " << out.size() << "bits"  << '~' << static_cast<double>(out.size())/8 << "bytes" << endl;
+	cout << "Bit output: " << out << endl;
+	cout << "File size: " << out.size() << "bits"  << " ~ " << static_cast<double>(out.size())/8 << "bytes" << endl;
 
 	// write to new .zip file
 	string name2 = argv[1];
@@ -143,7 +68,7 @@ int main(int argc, const char** argv) {
 		outfile2.write((char*) &sizeOut, 1); // codeword size
 		bitset<8> codeOut(alphabet[i].getCode());
 		outfile2.write((char*) &codeOut, 1); // codeword
-		outfile2 << endl; // every letter in separate line
+		cout << bitOut << ' ' << sizeOut << ' ' << codeOut << endl;
 	}
 
 	outfile2.close();
