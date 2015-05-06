@@ -23,11 +23,8 @@ int main(int argc, const char** argv) {
 
 	for(auto i = 0; i < content.size(); i+=24) {
 		bitset<8> x(content.substr(i,8));
-		//cout << (char) x.to_ulong() << endl;
 		bitset<8> y(content.substr(i+8,8));
-		//cout << y.to_ulong() << endl;
 		bitset<8> z(content.substr(i+8+8,8));
-		//cout << z.to_string<char,std::string::traits_type,std::string::allocator_type>().substr(8-y.to_ulong(), y.to_ulong()) << endl;
 		letter member((char) x.to_ulong(), z.to_string<char,std::string::traits_type,std::string::allocator_type>().substr(8-y.to_ulong(), y.to_ulong()));
 		key.push_back(member);
 	}

@@ -68,7 +68,6 @@ int main(int argc, const char** argv) {
 		outfile2.write((char*) &sizeOut, 1); // codeword size
 		bitset<8> codeOut(alphabet[i].getCode());
 		outfile2.write((char*) &codeOut, 1); // codeword
-		cout << bitOut << ' ' << sizeOut << ' ' << codeOut << endl;
 	}
 
 	outfile2.close();
