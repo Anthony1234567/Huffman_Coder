@@ -1,5 +1,14 @@
 #include "functions.h"
 
+std::string getFilename(const std::string &path) {
+	std::string filename;
+  unsigned found = path.find_last_of(".");
+  filename = path.substr(0,found);
+  found = filename.find_last_of("/");
+  filename = filename.substr(found+1);
+  return filename;
+}
+
 int count(const std::vector<letter> &members) {
 	int counter = 0;
 	for(auto i = 0; i < members.size(); ++i) {
@@ -106,4 +115,29 @@ double calcAvgWordLen(std::vector<letter> &members) {
 		len += members[i].getCode().size() * members[i].getProb();
 	}
 	return len;
+}
+
+
+std::vector<letter> matching(std::string content, std::vector<letter> key) {
+	std::vector<letter> matchingKeywords;
+	for(auto i = 0; i < key.size(); ++i) {
+		if(key[i].getCode() == content) {
+			matchingKeywords.push_back(key[i]);
+		}
+	}
+	return matchingKeywords;
+}
+
+std::string decode(std::string &content, std::vector<letter> &key) {
+	unsigned long long index = 0;
+	std::string decodedContent;
+	while(content.size() > 0) {
+		if(matching(content.substr(0, index + 1), key).size() == 1) {
+			decodedContent += matching(content.substr(0, index + 1), key)[0].getChar();
+			content = content.substr(index + 1);
+			index = 0;
+		}
+		index++;
+	}
+	return decodedContent;
 }

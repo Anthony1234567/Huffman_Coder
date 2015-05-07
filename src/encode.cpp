@@ -10,13 +10,19 @@
 using namespace std;
 
 int main(int argc, const char** argv) {
-	fstream infile;
-	infile.open(argv[1]);
+	// filename
+	string fname = argv[1];
 
-	char viewing;
+	// open file
+	fstream infile;
+	infile.open(fname);
+
+	// content for file as string
 	string content;
+	char viewing;
 	vector<letter> alphabet;
 
+	// count occurence of each character seen
 	while(infile.get(viewing)) {
 		content += viewing;
 		letter v(viewing);
@@ -35,16 +41,21 @@ int main(int argc, const char** argv) {
 		}
 	}
 
+	// find alternate code for characters
 	calculateProbabilities(alphabet);
 	sort(alphabet.begin(), alphabet.end());
-	huffman(alphabet);
+	huffman(alphabet); // huffman-ish algo on sorted list
 	printAlphabet(alphabet); //after encoding
-	cout << "Average word length: " << calcAvgWordLen(alphabet) << endl;
+
+	// for personal uses
+	cout << "Average codeword length: " << calcAvgWordLen(alphabet) << endl;
 
 	infile.close();
 
+	// output
 	string out;
 
+	// encode content
 	for(auto i : content) {
 		for(auto j = 0; j < alphabet.size(); ++j) {
 			if(i == alphabet[j].getChar()) {
@@ -53,35 +64,42 @@ int main(int argc, const char** argv) {
 		}
 	}
 
-	cout << "Bit output: " << out << endl;
-	cout << "File size: " << out.size() << "bits"  << " ~ " << static_cast<double>(out.size())/8 << "bytes" << endl;
+	// personal uses
+	cout << "File size: " << out.size() + 2*8 + alphabet.size()*3*8 << "bits"
+		<< " ~ " << out.size() + 2 + static_cast<double>(alphabet.size())*3/8
+				<< "bytes" << endl;
 
-	// write to new .zip file
-	string name2 = argv[1];
-	fstream outfile2;
-	outfile2.open(name2 + ".info" , ios::binary | fstream::out);
+//-----------------------------------------------------------------------------
 
+	// .info file holds key
+	fstream outfile;
+	outfile.open(fname + ".compressed" , ios::binary | fstream::out);
+
+
+	// exta bits at the end due to hard coded 8 bit size
+	bitset<8> sizeRemainder(8 - out.size() % 8);
+	outfile.write((char*) &sizeRemainder, 1);
+
+	bitset<8> keySize(alphabet.size() * 8 * 3);
+	outfile.write((char*) &keySize, 1);
+
+	// formatting key
 	for(auto i = 0; i < alphabet.size(); ++i) {
 		bitset<8> bitOut(alphabet[i].getChar());
-		outfile2.write((char*) &bitOut, 1); // char representation
+		outfile.write((char*) &bitOut, 1); // char representation
 		bitset<8> sizeOut(alphabet[i].getCode().size());
-		outfile2.write((char*) &sizeOut, 1); // codeword size
+		outfile.write((char*) &sizeOut, 1); // codeword size
 		bitset<8> codeOut(alphabet[i].getCode());
-		outfile2.write((char*) &codeOut, 1); // codeword
+		outfile.write((char*) &codeOut, 1); // codeword
 	}
 
-	outfile2.close();
-
-	// write to new .zip file
-	string name = argv[1];
-	fstream outfile;
-	outfile.open(name + ".extension" , ios::binary | fstream::out);
-
+	// output content to new file
 	for(auto i = 0; i < out.size(); i+=8) {
 		bitset<8> bitOut(out.substr(i, 8));
 		outfile.write((char*) &bitOut, 1);
 	}
 
 	outfile.close();
+
 	return 0;
 }
