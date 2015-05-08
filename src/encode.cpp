@@ -63,11 +63,13 @@ int main(int argc, const char** argv) {
 			}
 		}
 	}
+	//out += "00000000";
 
+	//cout << "Output: " << out << endl;
 	// personal uses
-	cout << "File size: " << out.size() + 2*8 + alphabet.size()*3*8 << "bits"
-		<< " ~ " << out.size() + 2 + static_cast<double>(alphabet.size())*3/8
-				<< "bytes" << endl;
+	//cout << "File size: " << out.size() + 2*8 + alphabet.size()*3*8 << "bits"
+		//<< " ~ " << out.size() + 2 + static_cast<double>(alphabet.size())*3/8
+				//<< "bytes" << endl;
 
 //-----------------------------------------------------------------------------
 
@@ -79,9 +81,16 @@ int main(int argc, const char** argv) {
 	// exta bits at the end due to hard coded 8 bit size
 	bitset<8> sizeRemainder(8 - out.size() % 8);
 	outfile.write((char*) &sizeRemainder, 1);
+	for(auto i = 0; i < sizeRemainder.to_ulong(); ++i) {
+		out += "0";
+	}
 
-	bitset<8> keySize(alphabet.size() * 8 * 3);
+	cout << "remainder: " << sizeRemainder.to_ulong() << endl;
+
+	bitset<8> keySize(alphabet.size());
 	outfile.write((char*) &keySize, 1);
+
+	cout << "keySize: " << keySize.to_ulong() * 8 * 3 << endl;
 
 	// formatting key
 	for(auto i = 0; i < alphabet.size(); ++i) {
@@ -97,6 +106,7 @@ int main(int argc, const char** argv) {
 	for(auto i = 0; i < out.size(); i+=8) {
 		bitset<8> bitOut(out.substr(i, 8));
 		outfile.write((char*) &bitOut, 1);
+		//cout << bitOut << endl;
 	}
 
 	outfile.close();
