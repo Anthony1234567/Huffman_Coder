@@ -88,7 +88,7 @@ void huffman(std::vector<letter> &members) {
 	}
 	for(auto i = 0; i < fusionTrei.size(); ++i) {
 		for(auto j = 0; j < fusionTrei[i].size(); ++j) {
-			if(fusionTrei[i][j].getChar() != '\0') {
+			if(fusionTrei[i][j].getFreq() != -1) {
 				for(auto k = 0; k < members.size(); ++k) {
 					if(members[k].getChar() == fusionTrei[i][j].getChar()) {
 						members[k].bootlegencode(fusionTrei[i][j].getCode());

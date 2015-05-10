@@ -5,7 +5,7 @@ letter::letter(char c)
 {}
 
 letter::letter(double p)
-	: character('\0'), probability(p)
+	: frequency(-1), probability(p)
 {}
 
 letter::letter(char c, std::string e)
