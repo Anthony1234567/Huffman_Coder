@@ -76,9 +76,13 @@ int main(int argc, const char** argv) {
 	bitset<8> outRemainder(remainder);
 	key += outRemainder.to_string<char,std::string::traits_type,std::string::allocator_type>();
 
+	auto longestCodeWordLength = alphabet.back().getCode().size();
+	bitset<8> longestCodeLength(longestCodeWordLength);
+	key += longestCodeLength.to_string<char,std::string::traits_type,std::string::allocator_type>();
+
 	// size of key
 	int bytesRequiredForKeyLength;
-	if(alphabet.size() >= 256) {
+	if(alphabet.size() >= 256 || longestCodeWordLength > 8) {
 		bytesRequiredForKeyLength = 2;
 	}
 	else {
@@ -86,10 +90,6 @@ int main(int argc, const char** argv) {
 	}
 	bitset<8> keyLengthBytes(bytesRequiredForKeyLength);
 	key += keyLengthBytes.to_string<char,std::string::traits_type,std::string::allocator_type>();
-
-	auto longestCodeWordLength = alphabet.back().getCode().size();
-	bitset<8> longestCodeLength(longestCodeWordLength);
-	key += longestCodeLength.to_string<char,std::string::traits_type,std::string::allocator_type>();
 
 	auto keyLength = alphabet.size() * 3 * 8;
 	if(longestCodeWordLength > 8) {
@@ -99,11 +99,10 @@ int main(int argc, const char** argv) {
 		bitset<8> keySize(keyLength);
 		key += keySize.to_string<char,std::string::traits_type,std::string::allocator_type>();
 	}
-	else {
+	else if(bytesRequiredForKeyLength == 2) {
 		bitset<16> keySize(keyLength);
 		key += keySize.to_string<char,std::string::traits_type,std::string::allocator_type>();
 	}
-
 
 	// formatting key
 	for(auto i = 0; i < alphabet.size(); ++i) {

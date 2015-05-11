@@ -27,21 +27,21 @@ int main(int argc, const char** argv) {
 	}
 	content = content.substr(8);
 
-	bitset<8> keylenbyt(content.substr(0,8));
-	auto bytesForKeyLength = keylenbyt.to_ulong();
-	content = content.substr(8);
-
 	bitset<8> longestCode(content.substr(0,8));
 	auto longestCodeWordLength = longestCode.to_ulong();
 	content = content.substr(8);
 
+	bitset<8> keylenbyt(content.substr(0,8));
+	auto bytesForKeyLength = keylenbyt.to_ulong();
+	content = content.substr(8);
+
 	auto keySizeInBits = 0;
-	if(keylenbyt == 1) {
+	if(bytesForKeyLength == 1) {
 		bitset<8> keySize(content.substr(0,8));
 		keySizeInBits = keySize.to_ulong();
 		content = content.substr(8);
 	}
-	else if(keylenbyt == 2) {
+	else if(bytesForKeyLength == 2) {
 		bitset<16> keySize(content.substr(0,16));
 		keySizeInBits = keySize.to_ulong();
 		content = content.substr(16);
@@ -66,7 +66,7 @@ int main(int argc, const char** argv) {
 			key = key.substr(16);
 			codeword = code.to_string<char,std::string::traits_type,std::string::allocator_type>();
 		}
-		else {
+		else if(longestCodeWordLength <= 8) {
 			bitset<8> code(key.substr(0,8));
 			key = key.substr(8);
 			codeword = code.to_string<char,std::string::traits_type,std::string::allocator_type>();
