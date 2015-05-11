@@ -74,6 +74,7 @@ int main(int argc, const char** argv) {
 		letter member(symbol,codeword.substr(codeword.size() - size));
 		alphabet.push_back(member);
 	}
+	printAlphabet(alphabet);
 
 	string decodedContent = decode(content, alphabet);
 
