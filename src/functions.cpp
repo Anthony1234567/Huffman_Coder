@@ -132,6 +132,7 @@ std::string decode(std::string &content, std::vector<letter> &key) {
 	unsigned long long index = 0;
 	std::string decodedContent;
 	while(content.size() > 0) {
+		//std::cout << index << '/' << content.size() << std::endl;
 		if(matching(content.substr(0, index), key).size() == 1) {
 			decodedContent += matching(content.substr(0, index), key)[0].getChar();
 			content = content.substr(index);
