@@ -45,10 +45,6 @@ int main(int argc, const char** argv) {
 	calculateProbabilities(alphabet);
 	sort(alphabet.begin(), alphabet.end());
 	huffman(alphabet); // huffman-ish algo on sorted list
-	printAlphabet(alphabet); //after encoding
-
-	// for personal uses
-	cout << "Average codeword length: " << calcAvgWordLen(alphabet) << endl;
 
 	infile.close();
 
@@ -117,76 +113,14 @@ int main(int argc, const char** argv) {
 			bitset<8> codeOut(alphabet[i].getCode());
 			letterInfo = bitOut.to_string<char,std::string::traits_type,std::string::allocator_type>() + sizeOut.to_string<char,std::string::traits_type,std::string::allocator_type>() + codeOut.to_string<char,std::string::traits_type,std::string::allocator_type>();
 		}
-		else {//if(longestCodeWordLength > 8) {
+		else {
 			bitset<16> codeOut(alphabet[i].getCode());
 			letterInfo = bitOut.to_string<char,std::string::traits_type,std::string::allocator_type>() + sizeOut.to_string<char,std::string::traits_type,std::string::allocator_type>() + codeOut.to_string<char,std::string::traits_type,std::string::allocator_type>();
 		}
 		key += letterInfo;
 	}
-	//cout << key << endl;
 
 	string rawOutput = key + out;
-	//cout << rawOutput << endl;
-
-	/*
-	//------------------------
-	int rem = stoi(key.substr(0,8));
-	cout << "remainder: " << key.substr(0,8) << ' ' << rem << endl;
-	key = key.substr(8);
-	cout << key << endl;
-
-	int keylenbyt = stoi(key.substr(0,8));
-	cout << "key length bytes: " << key.substr(0,8) << ' ' << keylenbyt << endl;
-	key =	key.substr(8);
-	cout << key << endl;
-
-	int longestcode = stoi(key.substr(0,8));
-	cout << "longest code word: " << key.substr(0,8) << ' ' << longestcode << endl;
-	key = key.substr(8);
-	cout << key << endl;
-
-	string keysize;
-	if(keylenbyt == 1) {
-		keysize = key.substr(0,8);
-		cout << "key size: " << key.substr(0,8) << ' ' << keysize << endl;
-		key = key.substr(8);
-	}
-	else if(keylenbyt == 10) {
-		keysize = key.substr(0,16);
-		cout << "key size: " << key.substr(0,16) << ' ' << keysize << endl;
-		key = key.substr(16);
-	}
-	cout << key << endl;
-
-	string letter, codesize, code, data;
-	while(key.size() > 0) {
-		letter = key.substr(0,8);
-		key = key.substr(8);
-		codesize = key.substr(0,8);
-		key = key.substr(8);
-		if(longestCodeWordLength > 8) {
-			code = key.substr(0,16);
-			key = key.substr(16);
-		}
-		else {
-			code = key.substr(0,8);
-			key = key.substr(8);
-		}
-		data = letter + codesize + code;
-		cout << data << endl;
-	}
-*/
-
-	//bitset<8> keyBytes(bytesRequiredForKey);
-	//key += keyBytes.to_string<char,std::string::traits_type,std::string::allocator_type>();
-
-	//out += "00000000";
-
-	//cout << "Output: " << out << endl;
-	// personal uses
-	//cout << "File size: " << out.size() + 2*8 + alphabet.size()*3*8 << "bits"
-		//<< " ~ " << out.size() + 2 + static_cast<double>(alphabet.size())*3/8
-				//<< "bytes" << endl;
 
 //-----------------------------------------------------------------------------
 
@@ -194,36 +128,10 @@ int main(int argc, const char** argv) {
 	fstream outfile;
 	outfile.open(fname + ".compressed" , ios::binary | fstream::out);
 
-
-	//// exta bits at the end due to hard coded 8 bit size
-	//bitset<8> sizeRemainder(8 - out.size() % 8);
-	//outfile.write((char*) &sizeRemainder, 1);
-	//for(auto i = 0; i < sizeRemainder.to_ulong(); ++i) {
-		//out += "0";
-	//}
-
-	//cout << "remainder: " << sizeRemainder.to_ulong() << endl;
-
-	//bitset<8> keySize(alphabet.size());
-	//outfile.write((char*) &keySize, 1);
-
-	//cout << "keySize: " << keySize.to_ulong() * 8 * 3 << endl;
-
-	//// formatting key
-	//for(auto i = 0; i < alphabet.size(); ++i) {
-		//bitset<8> bitOut(alphabet[i].getChar());
-		//outfile.write((char*) &bitOut, 1); // char representation
-		//bitset<8> sizeOut(alphabet[i].getCode().size());
-		//outfile.write((char*) &sizeOut, 1); // codeword size
-		//bitset<8> codeOut(alphabet[i].getCode());
-		//outfile.write((char*) &codeOut, 1); // codeword
-	//}
-
 	//// output content to new file
 	for(auto i = 0; i < rawOutput.size(); i+=8) {
 		bitset<8> bitOut(rawOutput.substr(i, 8));
 		outfile.write((char*) &bitOut, 1);
-		////cout << bitOut << endl;
 	}
 
 	outfile.close();

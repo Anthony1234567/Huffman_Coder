@@ -132,9 +132,9 @@ std::string decode(std::string &content, std::vector<letter> &key) {
 	unsigned long long index = 0;
 	std::string decodedContent;
 	while(content.size() > 0) {
-		if(matching(content.substr(0, index + 1), key).size() == 1) {
-			decodedContent += matching(content.substr(0, index + 1), key)[0].getChar();
-			content = content.substr(index + 1);
+		if(matching(content.substr(0, index), key).size() == 1) {
+			decodedContent += matching(content.substr(0, index), key)[0].getChar();
+			content = content.substr(index);
 			index = 0;
 		}
 		index++;

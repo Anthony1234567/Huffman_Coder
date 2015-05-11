@@ -12,8 +12,6 @@ int main(int argc, const char** argv) {
 	fstream infile;
 	infile.open(argv[1], fstream::binary | fstream::in);
 
-	cout << "success" << endl;
-
 	// grab characters in file
 	char viewing;
 	string content;
@@ -22,63 +20,78 @@ int main(int argc, const char** argv) {
 		content += input.to_string<char,std::string::traits_type,std::string::allocator_type>();
 	}
 
-	cout << "success" << endl;
-
-	// first byte in file contains info on the xtra bits at the end of the file
-	bitset<8> rem(content.substr(0,8));
-	int remainder = rem.to_ulong();
-	content = content.substr(8);
-	content = content.substr(0, content.size() - remainder);
-
-	cout << "remainder: " << remainder << endl;
-	cout << "success" << endl;
-
-	// second byte in file contains info about the size of the key
-	bitset<8> keyS(content.substr(0,8));
-	int keySize = keyS.to_ulong() * 8 * 3;
+	bitset<8> remainder(content.substr(0,8));
+	auto fillSpace = 0;
+	if(remainder.to_ulong() != 0) {
+		fillSpace = 8 - remainder.to_ulong();
+	}
 	content = content.substr(8);
 
-	cout << "key size: " << keySize << endl;
-	cout << "success" << endl;
+	bitset<8> keylenbyt(content.substr(0,8));
+	auto bytesForKeyLength = keylenbyt.to_ulong();
+	content = content.substr(8);
 
-	// peie together the key info is set up in 3's
-	vector<letter> key;
-	for(auto i = 0; i < keySize; i+=24) {
-		bitset<8> x(content.substr(i,8)); // char representation
-		bitset<8> y(content.substr(i+8,8)); // code length
-		bitset<8> z(content.substr(i+8+8,8)); // code word
-		// put data in letter structure
-		letter member((char) x.to_ulong(), z.to_string<char,std::string::traits_type,std::string::allocator_type>().substr(8-y.to_ulong(), y.to_ulong()));
-		//put letter in key vector
-		key.push_back(member);
-		cout << i << endl;
-		cout << member.getChar() << endl;
-		cout << member.getCode() << endl;
+	bitset<8> longestCode(content.substr(0,8));
+	auto longestCodeWordLength = longestCode.to_ulong();
+	content = content.substr(8);
+
+	auto keySizeInBits = 0;
+	if(keylenbyt == 1) {
+		bitset<8> keySize(content.substr(0,8));
+		keySizeInBits = keySize.to_ulong();
+		content = content.substr(8);
+	}
+	else if(keylenbyt == 2) {
+		bitset<16> keySize(content.substr(0,16));
+		keySizeInBits = keySize.to_ulong();
+		content = content.substr(16);
+	}
+	string key = content.substr(0,keySizeInBits);
+	content = content.substr(keySizeInBits);
+	content = content.substr(0,content.size() - fillSpace);
+
+	char symbol;
+	int size;
+	string codeword;
+	vector<letter> alphabet;
+	while(key.size() > 0) {
+		bitset<8> character(key.substr(0,8));
+		key = key.substr(8);
+		symbol = (char) character.to_ulong();
+		bitset<8> codeSize(key.substr(0,8));
+		key = key.substr(8);
+		size =  codeSize.to_ulong();
+		if(longestCodeWordLength > 8) {
+			bitset<16> code(key.substr(0,16));
+			key = key.substr(16);
+			codeword = code.to_string<char,std::string::traits_type,std::string::allocator_type>();
+		}
+		else {
+			bitset<8> code(key.substr(0,8));
+			key = key.substr(8);
+			codeword = code.to_string<char,std::string::traits_type,std::string::allocator_type>();
+		}
+		letter member(symbol,codeword.substr(codeword.size() - size));
+		alphabet.push_back(member);
 	}
 
-	printAlphabet(key);
-	cout << "success" << endl;
-
-
-	//content = content.substr(keySize);
-	//cout << content << endl;
-	//string decodedContent = decode(content, key);
+	string decodedContent = decode(content, alphabet);
 
 	infile.close();
 
-// separate input from output
 //------------------------------------------------------------------------------
 
 	// get true name of file ... not the path
-	//string newName = argv[1];
-	//newName = getFilename(newName);
+	string newName = argv[1];
+	newName = getFilename(newName);
 
-	//fstream outfile;
-	//outfile.open(newName + ".decompressed", fstream::out);
+	fstream outfile;
+	outfile.open(newName, fstream::out);
 
-	//outfile << decodedContent; // output content to file
+	outfile << decodedContent; // output content to file
+	outfile << '\n';
 
-	//outfile.close();
+	outfile.close();
 
 	return 0;
 }
