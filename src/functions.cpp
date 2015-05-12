@@ -1,31 +1,6 @@
 #include "functions.h"
 #include <iomanip>
 
-// Process has done i out of n rounds,
-// and we want a bar of width w and resolution r.
-static inline void loadBar(int x, int n, int r, int w) {
-	// Only update r times.
-	if ( x % (n/r +1) != 0 ) return;
-
-	// Calculuate the ratio of complete-to-incomplete.
-	float ratio = x/(float)n;
-	int   c     = ratio * w;
-
-	// Show the percentage complete.
-	printf("%3d%% [", (int)(ratio*100) );
-
-	// Show the load bar.
-	for (int x=0; x<c; x++)
-		printf("=");
-
-	for (int x=c; x<w; x++)
-		printf(" ");
-
-	// ANSI Control codes to go back to the
-	// previous line and clear it.
-	printf("]\n\033[F\033[J");
-}
-
 static inline void loadbar(unsigned int x, unsigned int n, unsigned int w = 100) {
 	if ( (x != n) && (x % (n/100+1) != 0) ) return;
 	float ratio = x/(float)n;
@@ -176,10 +151,8 @@ std::string decode(std::string &content, std::vector<letter> &key) {
 			index = 0;
 		}
 		index++;
-		//std::cout << static_cast<int>(static_cast<double>(permindex)/permsize*100) << "%" << std::endl;
 		permindex++;
 		loadbar(permindex, permsize);
-		//loadBar(permindex, permsize, 100, 100);
 	}
 	std::cout << std::endl;
 	return decodedContent;

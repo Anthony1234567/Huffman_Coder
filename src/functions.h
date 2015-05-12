@@ -5,6 +5,7 @@
 #include <vector>
 #include "letter.h"
 
+static inline void loadbar(unsigned int, unsigned int, unsigned int); // progress bar
 std::string getFilename(const std::string &); // get true name of a file
 int count(const std::vector<letter> &); // retuens size of alphabet
 void calculateProbabilities(std::vector<letter> &); // sets letter probability

@@ -74,8 +74,8 @@ int main(int argc, const char** argv) {
 		letter member(symbol,codeword.substr(codeword.size() - size));
 		alphabet.push_back(member);
 	}
-	//printAlphabet(alphabet);
 
+	cout << "Converting code back into original content..." << endl;
 	string decodedContent = decode(content, alphabet);
 
 	infile.close();
@@ -89,8 +89,7 @@ int main(int argc, const char** argv) {
 	fstream outfile;
 	outfile.open(newName, fstream::out);
 
-	outfile << decodedContent; // output content to file
-	outfile << '\n';
+	outfile << decodedContent << '\n'; // output content to file
 
 	outfile.close();
 

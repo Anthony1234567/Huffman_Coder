@@ -45,7 +45,6 @@ int main(int argc, const char** argv) {
 	calculateProbabilities(alphabet);
 	sort(alphabet.begin(), alphabet.end());
 	huffman(alphabet); // huffman-ish algo on sorted list
-	//printAlphabet(alphabet);
 
 	infile.close();
 
@@ -76,6 +75,7 @@ int main(int argc, const char** argv) {
 	bitset<8> outRemainder(remainder);
 	key += outRemainder.to_string<char,std::string::traits_type,std::string::allocator_type>();
 
+	// longest code length
 	auto longestCodeWordLength = alphabet.back().getCode().size();
 	bitset<8> longestCodeLength(longestCodeWordLength);
 	key += longestCodeLength.to_string<char,std::string::traits_type,std::string::allocator_type>();
@@ -120,6 +120,7 @@ int main(int argc, const char** argv) {
 		key += letterInfo;
 	}
 
+	// output for outfile
 	string rawOutput = key + out;
 
 //-----------------------------------------------------------------------------
