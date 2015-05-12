@@ -1,12 +1,48 @@
 #include "functions.h"
+#include <iomanip>
+
+// Process has done i out of n rounds,
+// and we want a bar of width w and resolution r.
+static inline void loadBar(int x, int n, int r, int w) {
+	// Only update r times.
+	if ( x % (n/r +1) != 0 ) return;
+
+	// Calculuate the ratio of complete-to-incomplete.
+	float ratio = x/(float)n;
+	int   c     = ratio * w;
+
+	// Show the percentage complete.
+	printf("%3d%% [", (int)(ratio*100) );
+
+	// Show the load bar.
+	for (int x=0; x<c; x++)
+		printf("=");
+
+	for (int x=c; x<w; x++)
+		printf(" ");
+
+	// ANSI Control codes to go back to the
+	// previous line and clear it.
+	printf("]\n\033[F\033[J");
+}
+
+static inline void loadbar(unsigned int x, unsigned int n, unsigned int w = 100) {
+	if ( (x != n) && (x % (n/100+1) != 0) ) return;
+	float ratio = x/(float)n;
+	int c = ratio * w;
+	std::cout << std::setw(3) << (int)(ratio*100) << "% [";
+	for (int x=0; x<c; x++) std::cout << "=";
+	for (int x=c; x<w; x++) std::cout << " ";
+	std::cout << "]\r" << std::flush;
+}
 
 std::string getFilename(const std::string &path) {
 	std::string filename;
-  unsigned found = path.find_last_of(".");
-  filename = path.substr(0,found);
-  found = filename.find_last_of("/");
-  filename = filename.substr(found+1);
-  return filename;
+	unsigned found = path.find_last_of(".");
+	filename = path.substr(0,found);
+	found = filename.find_last_of("/");
+	filename = filename.substr(found+1);
+	return filename;
 }
 
 int count(const std::vector<letter> &members) {
@@ -130,15 +166,21 @@ std::vector<letter> matching(std::string content, std::vector<letter> key) {
 
 std::string decode(std::string &content, std::vector<letter> &key) {
 	unsigned long long index = 0;
+	unsigned long long permindex = 0;
+	unsigned long long permsize = content.size();
 	std::string decodedContent;
 	while(content.size() > 0) {
-		//std::cout << index << '/' << content.size() << std::endl;
 		if(matching(content.substr(0, index), key).size() == 1) {
 			decodedContent += matching(content.substr(0, index), key)[0].getChar();
 			content = content.substr(index);
 			index = 0;
 		}
 		index++;
+		//std::cout << static_cast<int>(static_cast<double>(permindex)/permsize*100) << "%" << std::endl;
+		permindex++;
+		loadbar(permindex, permsize);
+		//loadBar(permindex, permsize, 100, 100);
 	}
+	std::cout << std::endl;
 	return decodedContent;
 }

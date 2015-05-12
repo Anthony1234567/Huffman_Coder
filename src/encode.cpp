@@ -45,7 +45,7 @@ int main(int argc, const char** argv) {
 	calculateProbabilities(alphabet);
 	sort(alphabet.begin(), alphabet.end());
 	huffman(alphabet); // huffman-ish algo on sorted list
-	printAlphabet(alphabet);
+	//printAlphabet(alphabet);
 
 	infile.close();
 
