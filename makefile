@@ -10,4 +10,4 @@ decompress:
 		@g++ -std=c++1y src/letter.cpp src/functions.cpp src/decode.cpp -o bin/decode
 
 clean:
-		@rm -R bin 2>/dev/null || true; rm *.compressed 2>/dev/null || true; rm *.decompressed 2>/dev/null || true
+		@rm -R bin 2>/dev/null || true; rm *.compressed 2>/dev/null || true
