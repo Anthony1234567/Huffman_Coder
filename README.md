@@ -1,5 +1,8 @@
 # Huffman_Coder
-Undergraduate research project implementing the Huffman Algorithm for lossless data compression
+Undergraduate research project implementing the Huffman Algorithm for lossless data compression.
+
+### Presentation 
+Beamer slides for presentation are avilable [here](presentation/Data_Comp.pdf).
 
 ### Running 
 Run the scrips provided to run the program.
@@ -12,9 +15,6 @@ To decompress run decompress script on a ".compressed" file created from running
 ```
 ./scripts/decompress <relative path to .compressed file>
 ```
-
-### Presentation 
-Beamer slides for presentation are avilable [here](presentation/Data_Comp.pdf).
 
 ### Known Bugs
 * "Compressed" file is larger than original file 
