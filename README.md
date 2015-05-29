@@ -13,6 +13,9 @@ To decompress run decompress script on a ".compressed" file created from running
 ./scripts/decompress <relative path to .compressed file>
 ```
 
+### Presentation 
+Beamer slides for presentation are avilable [here](presentation/Data_Comp.pdf).
+
 ### Known Bugs
 * "Compressed" file is larger than original file 
 * Decompression function is too slow in large files
